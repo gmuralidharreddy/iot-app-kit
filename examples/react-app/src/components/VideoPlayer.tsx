@@ -1,4 +1,4 @@
-import { VideoPlayer } from '@iot-app-kit/react-components';
+import { VideoPlayer } from '@iot-app-kit/react-components/components/video-player';
 import { dataSource } from '../dataSource';
 import { kvsStreamName, videoEntityId, videoComponentName, videoViewport } from '../configs';
 
