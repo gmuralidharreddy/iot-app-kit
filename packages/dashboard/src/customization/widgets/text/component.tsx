@@ -28,6 +28,10 @@ const TextWidgetComponent: React.FC<TextWidget> = (widget) => {
   };
 
   useEffect(() => {
+    handleSetEdit(true);
+  }, []);
+
+  useEffect(() => {
     return () => {
       /**
        * Handle edge case where a user right click deletes
