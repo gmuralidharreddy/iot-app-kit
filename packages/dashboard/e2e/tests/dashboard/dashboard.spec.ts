@@ -121,3 +121,31 @@ test('dashboard add and remove multiple widgets', async ({ page }) => {
   const deletedWidgets = await grid.widgets();
   expect(deletedWidgets).toHaveLength(0);
 });
+
+test('paginating forward and backward with multiple widgets', async ({ page }) => {
+  await page.goto(TEST_PAGE);
+  const frame = page.locator(TEST_IFRAME); // Need to go into frame otherwise the `locator` won't locate the selection.
+
+  await expect(frame.locator(COMPONENT_SELECTOR)).toContainText('Time machine');
+  const fowardBtn = await page.getByRole('button', {
+    name: /paginate-foward/i,
+  });
+
+  const backBtn = await page.getByRole('button', {
+    name: /paginate-backward/i,
+  });
+
+  expect(fowardBtn.isDisabled());
+
+  await backBtn.hover();
+  //get tooltiptext
+  //expect it to have "Go Back 5m"
+
+  await backBtn.click();
+  await backBtn.hover();
+  //hover over back
+  // expect it to say "Go back selected range"
+
+  await fowardBtn.hover();
+  //expect it to say "Go forward selected range"
+});

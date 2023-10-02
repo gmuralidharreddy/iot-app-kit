@@ -119,3 +119,32 @@ export const viewportToDateRange = (viewport?: Viewport): DateRangePickerProps.V
 
   return null;
 };
+
+export const getNewViewportStartDate = (value: DateRangePickerProps.RelativeValue): Date => {
+  const newStart = new Date();
+  switch (value.unit) {
+    case 'second':
+      newStart.setSeconds(newStart.getSeconds() - value.amount);
+      return newStart;
+    case 'minute':
+      newStart.setMinutes(newStart.getMinutes() - value.amount);
+      return newStart;
+    case 'hour':
+      newStart.setHours(newStart.getHours() - value.amount);
+      return newStart;
+    case 'day':
+      newStart.setDate(newStart.getDate() - value.amount);
+      return newStart;
+    case 'week':
+      newStart.setDate(newStart.getDate() - 7 * value.amount);
+      return newStart;
+    case 'month':
+      newStart.setMonth(newStart.getMonth() - value.amount);
+      return newStart;
+    case 'year':
+      newStart.setFullYear(newStart.getFullYear() - value.amount);
+      return newStart;
+    default:
+      return newStart;
+  }
+};

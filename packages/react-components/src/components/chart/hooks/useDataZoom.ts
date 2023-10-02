@@ -30,14 +30,20 @@ export const useDataZoom = (chartRef: MutableRefObject<EChartsType | null>, view
     viewportInMsRef.current = viewportInMs;
   }, [viewportInMs]);
 
-  // handle live mode
+  // handle live mode + pagination
   useEffect(() => {
     const chart = chartRef.current;
-    if (chart && (!isScrolling || lastUpdatedBy === 'date-picker')) {
+    if (chart && !isScrolling && viewportInMs.isDurationViewport) {
       setIsScrolling(false);
       chart.setOption({
         dataZoom: { ...DEFAULT_DATA_ZOOM, startValue: viewportInMs.initial, end: 100 },
       });
+    } else {
+      //pagination in absolute range
+      if (chart && !isScrolling)
+        chart.setOption({
+          dataZoom: { ...DEFAULT_DATA_ZOOM, startValue: viewportInMs.initial, endValue: viewportInMs.end },
+        });
     }
     // ignoring because refs dont need to be in dependency array
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,6 +57,7 @@ export const useDataZoom = (chartRef: MutableRefObject<EChartsType | null>, view
         throttle(() => {
           setIsScrolling(true);
           onDataZoomEvent(chart, setViewport);
+          setIsScrolling(false); //allow for pagination after gesture, will enter the correct branch in above useEffect
         }, ECHARTS_ZOOM_DEBOUNCE_MS)();
       });
     }
