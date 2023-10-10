@@ -125,26 +125,25 @@ export const getNewViewportStartDate = (value: DateRangePickerProps.RelativeValu
   switch (value.unit) {
     case 'second':
       newStart.setSeconds(newStart.getSeconds() - value.amount);
-      return newStart;
+      break;
     case 'minute':
       newStart.setMinutes(newStart.getMinutes() - value.amount);
-      return newStart;
+      break;
     case 'hour':
       newStart.setHours(newStart.getHours() - value.amount);
-      return newStart;
+      break;
     case 'day':
       newStart.setDate(newStart.getDate() - value.amount);
-      return newStart;
+      break;
     case 'week':
       newStart.setDate(newStart.getDate() - 7 * value.amount);
-      return newStart;
+      break;
     case 'month':
       newStart.setMonth(newStart.getMonth() - value.amount);
-      return newStart;
+      break;
     case 'year':
       newStart.setFullYear(newStart.getFullYear() - value.amount);
-      return newStart;
-    default:
-      return newStart;
+      break;
   }
+  return newStart;
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import Button from '@cloudscape-design/components/button';
 import DateRangePicker from '@cloudscape-design/components/date-range-picker';
@@ -10,6 +10,7 @@ import type { NonCancelableEventHandler } from '@cloudscape-design/components/in
 import { dateRangeToViewport, relativeOptions, viewportToDateRange, getNewViewportStartDate } from './viewportAdapter';
 import { rangeValidator } from './rangeValidator';
 import { useViewport } from '../../hooks/useViewport';
+import { Viewport } from '@iot-app-kit/core';
 import Tooltip from '../tooltip/tooltip';
 
 export type ViewportMessages = DateRangePickerProps.I18nStrings & {
@@ -57,46 +58,44 @@ const messages: ViewportMessages = {
  */
 export const TimeSelection = ({ isPaginationEnabled }: { isPaginationEnabled?: boolean }) => {
   const { viewport, setViewport } = useViewport();
-  const [disabled, setDisabled] = useState<boolean | undefined>(true);
+
+  const getDisableForwardBoolean = (viewport: Viewport | undefined) => {
+    if (!viewport) return true;
+    if ('duration' in viewport) return true;
+    const duration = new Date(viewport.end).getTime() - new Date(viewport.start).getTime();
+    return new Date(viewport.end).getTime() + duration > Date.now();
+  };
 
   const handleChangeDateRange: NonCancelableEventHandler<DateRangePickerProps.ChangeDetail> = (event) => {
     const { value } = event.detail;
     if (!value) return;
-    if (value.type === 'relative') setDisabled(true);
     setViewport(dateRangeToViewport(value), 'date-picker');
   };
 
   const handlePaginateForward = () => {
-    if (!viewport) return;
     const value = viewportToDateRange(viewport);
-    if (value?.type == 'absolute' && !disabled) {
+    if (!value) return;
+    if (value.type == 'absolute') {
       const duration = new Date(value.endDate).getTime() - new Date(value.startDate).getTime();
       const newEnd = new Date(new Date(value.endDate).getTime() + duration);
-      if (newEnd >= new Date()) {
-        setDisabled(true)
-      } else {
-        setViewport(
-          dateRangeToViewport({ startDate: value.endDate, endDate: newEnd.toISOString(), type: value?.type }),
-          'date-picker'
-        );
-      }
-    } 
+      setViewport(
+        dateRangeToViewport({ startDate: value.endDate, endDate: newEnd.toISOString(), type: value.type }),
+        'date-picker'
+      );
+    }
   };
 
   const handlePaginateBackward = () => {
-    if (!viewport) return;
     const value = viewportToDateRange(viewport);
-    if (disabled) {
-      setDisabled(false);
-    }
-    if (value?.type == 'absolute') {
+    if (!value) return;
+    if (value.type == 'absolute') {
       const duration = new Date(value.endDate).getTime() - new Date(value.startDate).getTime();
       const newStart = new Date(new Date(value.startDate).getTime() - duration);
       setViewport(
-        dateRangeToViewport({ startDate: newStart.toISOString(), endDate: value.startDate, type: value?.type }),
+        dateRangeToViewport({ startDate: newStart.toISOString(), endDate: value.startDate, type: value.type }),
         'date-picker'
       );
-    } else if (value?.type == 'relative') {
+    } else if (value.type == 'relative') {
       const newEnd = new Date();
       const newStart = getNewViewportStartDate(value);
       setViewport(
@@ -114,7 +113,7 @@ export const TimeSelection = ({ isPaginationEnabled }: { isPaginationEnabled?: b
       <SpaceBetween direction='horizontal' size='xxs'>
         {isPaginationEnabled && (
           <div className='tooltip'>
-            <Button ariaLabel="paginate-backward" iconName='caret-left-filled' onClick={handlePaginateBackward} />
+            <Button ariaLabel='paginate-backward' iconName='caret-left-filled' onClick={handlePaginateBackward} />
             <Tooltip
               displayText={`Move back ${viewport && 'duration' in viewport ? viewport.duration : 'selected range'}`}
             ></Tooltip>
@@ -133,10 +132,17 @@ export const TimeSelection = ({ isPaginationEnabled }: { isPaginationEnabled?: b
         />
         {isPaginationEnabled && (
           <div className='tooltip'>
-            <Button ariaLabel="paginate-foward" disabled={disabled} iconName='caret-right-filled' onClick={handlePaginateForward} />
-            {!disabled && (
+            <Button
+              ariaLabel='paginate-foward'
+              disabled={getDisableForwardBoolean(viewport)}
+              iconName='caret-right-filled'
+              onClick={handlePaginateForward}
+            />
+            {!getDisableForwardBoolean(viewport) && (
               <Tooltip
-                displayText={`Move forward ${viewport && 'duration' in viewport ? viewport.duration : 'selected range'}`}
+                displayText={`Move forward ${
+                  viewport && 'duration' in viewport ? viewport.duration : 'selected range'
+                }`}
               ></Tooltip>
             )}
           </div>

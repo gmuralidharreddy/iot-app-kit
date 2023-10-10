@@ -27,7 +27,7 @@ const Tooltip: React.FC<TooltipProps> = ({ displayText }) => {
   };
 
   return (
-    <span className='tooltiptext' style={tooltipStyle}>
+    <span className='tooltiptext' role='tooltip' aria-label='tooltip-text' style={tooltipStyle}>
       {displayText}
     </span>
   );

@@ -138,14 +138,18 @@ test('paginating forward and backward with multiple widgets', async ({ page }) =
   expect(fowardBtn.isDisabled());
 
   await backBtn.hover();
-  //get tooltiptext
+  const tooltiptext = await page.getByRole('tooltip', {
+    name: /tooltip-text/i,
+  });
+  expect(tooltiptext).toHaveText('Go Back 5m');
   //expect it to have "Go Back 5m"
 
   await backBtn.click();
   await backBtn.hover();
-  //hover over back
+  expect(tooltiptext).toHaveText('Go back selected range');
   // expect it to say "Go back selected range"
 
   await fowardBtn.hover();
+  expect(tooltiptext).toHaveText('Go forward selected range');
   //expect it to say "Go forward selected range"
 });
