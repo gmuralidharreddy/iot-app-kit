@@ -64,6 +64,52 @@ describe('createOverlayEntityComponent', () => {
     });
   });
 
+  it('should return expected overlay component with data rows having long content', () => {
+    const longContent = new Array(60).fill('0123456789').join('');
+    const result = createOverlayEntityComponent({
+      type: KnownComponentType.DataOverlay,
+      subType: Component.DataOverlaySubType.TextAnnotation,
+      dataRows: [
+        {
+          rowType: Component.DataOverlayRowType.Markdown,
+          content: longContent,
+        },
+      ],
+      valueDataBindings: [],
+    });
+
+    expect(result.properties).toEqual({
+      subType: {
+        value: { stringValue: Component.DataOverlaySubType.TextAnnotation },
+      },
+      dataRows: {
+        value: {
+          listValue: [
+            {
+              mapValue: {
+                rowType: {
+                  stringValue: Component.DataOverlayRowType.Markdown,
+                },
+                content: {
+                  stringValue:
+                    '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345',
+                },
+                content_1: {
+                  stringValue:
+                    '6789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901',
+                },
+                content_2: {
+                  stringValue:
+                    '2345678901234567890123456789012345678901234567890123456789012345678901234567890123456789',
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+  });
+
   it('should return expected tag component with rowBindings', () => {
     const result = createOverlayEntityComponent({
       type: KnownComponentType.DataOverlay,
@@ -181,6 +227,42 @@ describe('parseOverlayComp', () => {
         {
           rowType: Component.DataOverlayRowType.Markdown,
           content: '${abc} def',
+        },
+      ],
+      valueDataBindings: [],
+    });
+  });
+
+  it('should parse to expected overlay component with data rows having long content', () => {
+    const result = parseOverlayComp({
+      componentTypeId: componentTypeToId[KnownComponentType.DataOverlay],
+      properties: [
+        {
+          propertyName: 'subType',
+          propertyValue: Component.DataOverlaySubType.TextAnnotation,
+        },
+        {
+          propertyName: 'dataRows',
+          propertyValue: [
+            {
+              rowType: Component.DataOverlayRowType.Markdown,
+              content: '0123456789',
+              content_1: '0123456789',
+              content_2: '0123456789',
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result).toEqual({
+      ref: expect.anything(),
+      type: KnownComponentType.DataOverlay,
+      subType: Component.DataOverlaySubType.TextAnnotation,
+      dataRows: [
+        {
+          rowType: Component.DataOverlayRowType.Markdown,
+          content: '012345678901234567890123456789',
         },
       ],
       valueDataBindings: [],
