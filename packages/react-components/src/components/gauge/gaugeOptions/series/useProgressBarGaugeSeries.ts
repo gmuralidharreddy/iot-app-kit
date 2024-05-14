@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { Primitive } from '@iot-app-kit/core';
 import { GaugeProps } from '../../types';
 import { DEFAULT_GAUGE_PROGRESS_COLOR } from '../../constants';
-import { useGaugeThresholds } from '../../hooks/useGaugeThresholds';
 import { useGaugeFormatterValue } from '../../hooks/useGaugeFormatterValue';
 
 /**
@@ -11,6 +10,7 @@ import { useGaugeFormatterValue } from '../../hooks/useGaugeFormatterValue';
  * @param {Pick<GaugeProps, 'settings' | 'thresholds' | 'significantDigits'> & {
  *   gaugeValue?: Primitive;
  *   name?: string;
+ *   color?: string;
  *   unit?: string;
  *   hasThresholds: boolean;
  * }} params - The parameters for generating the progress bar gauge series.
@@ -18,23 +18,21 @@ import { useGaugeFormatterValue } from '../../hooks/useGaugeFormatterValue';
  */
 export const useProgressBarGaugeSeries = ({
   settings,
-  thresholds,
+  thresholds: gaugeThresholds,
   significantDigits,
   gaugeValue,
   name,
+  color: gaugeColor,
   unit,
   hasThresholds,
-}: Pick<GaugeProps, 'settings' | 'thresholds' | 'significantDigits'> & {
+}: Pick<GaugeProps, 'settings' | 'significantDigits'> & {
   gaugeValue?: Primitive;
   name?: string;
+  color?: string;
   unit?: string;
   hasThresholds: boolean;
+  thresholds?: (string | number)[][];
 }) => {
-  const gaugeThresholds = useGaugeThresholds({
-    hasThresholds,
-    settings,
-    thresholds,
-  });
   const { getFormatterValue } = useGaugeFormatterValue({
     significantDigits,
     unit,
@@ -46,7 +44,9 @@ export const useProgressBarGaugeSeries = ({
       min: settings?.yMin,
       max: settings?.yMax,
       itemStyle: {
-        color: hasThresholds ? gaugeThresholds : DEFAULT_GAUGE_PROGRESS_COLOR,
+        color: hasThresholds
+          ? gaugeThresholds
+          : gaugeColor ?? DEFAULT_GAUGE_PROGRESS_COLOR,
       },
       progress: {
         width: settings?.gaugeThickness,
@@ -80,6 +80,7 @@ export const useProgressBarGaugeSeries = ({
     settings?.fontSize,
     settings?.unitFontSize,
     settings?.showName,
+    gaugeColor,
     hasThresholds,
     gaugeThresholds,
     getFormatterValue,

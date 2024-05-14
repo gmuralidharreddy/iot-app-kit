@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Chart, useViewport } from '@iot-app-kit/react-components';
+import { Chart, useViewport } from '../../../../../react-components/src';
 // FIXME: Export ChartOptions from @iot-app-kit/react-components
 // FIXME: Export ChartStyleSettingsOptions from @iot-app-kit/react-components
 // eslint-disable-next-line no-restricted-imports
@@ -175,7 +175,7 @@ const LineScatterChartWidgetComponent: React.FC<LineScatterChartWidget> = (
 
   const convertedAxis = useConvertedAxis(axis);
 
-  // the 4 is from the widget tile top, bottom boder lines height
+  // the 44 is from the widget tile header and top, bottom boder lines height
   // the 8 is from the left and right border lines width
   const size = { width: chartSize.width - 8, height: chartSize.height - 44 };
 

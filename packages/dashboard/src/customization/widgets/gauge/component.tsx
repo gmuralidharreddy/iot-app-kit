@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import pickBy from 'lodash/pickBy';
-import { Gauge, useViewport } from '@iot-app-kit/react-components';
+import { Gauge, useViewport } from '../../../../../react-components/src';
+// import { Gauge, useViewport } from '@iot-app-kit/react-components';
 import { createWidgetRenderKey } from '../utils/createWidgetRenderKey';
 import type { DashboardState } from '~/store/state';
 import type { GaugeWidget } from '../types';
@@ -20,6 +21,7 @@ const GaugeWidgetComponent: React.FC<GaugeWidget> = (widget) => {
   );
 
   const {
+    title,
     styleSettings,
     queryConfig,
     showUnit,
@@ -57,10 +59,12 @@ const GaugeWidgetComponent: React.FC<GaugeWidget> = (widget) => {
   const significantDigits =
     widgetSignificantDigits ?? dashboardSignificantDigits;
 
-  const size = { width: chartSize.width - 8, height: chartSize.height - 8 };
+  // the 44 is from the widget tile header and top, bottom boder lines height
+  // the 8 is from the left and right border lines width
+  const size = { width: chartSize.width - 8, height: chartSize.height - 44 };
 
   return (
-    <WidgetTile widget={widget} key={key}>
+    <WidgetTile widget={widget} title={title} key={key}>
       <Gauge
         size={size}
         query={queries[0]}

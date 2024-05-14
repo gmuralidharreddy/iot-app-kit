@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { Primitive } from '@iot-app-kit/core';
 import { GaugeProps } from '../../types';
-import { useGaugeThresholds } from '../../hooks/useGaugeThresholds';
 import { useGaugeFormatterValue } from '../../hooks/useGaugeFormatterValue';
 
 /**
@@ -20,23 +19,19 @@ import { useGaugeFormatterValue } from '../../hooks/useGaugeFormatterValue';
 
 export const useThresholdOutsideArcSeries = ({
   settings,
-  thresholds,
+  thresholds: gaugeThresholds,
   significantDigits,
   gaugeValue,
   name,
   unit,
-  hasThresholds,
-}: Pick<GaugeProps, 'settings' | 'thresholds' | 'significantDigits'> & {
+}: // hasThresholds,
+Pick<GaugeProps, 'settings' | 'significantDigits'> & {
   gaugeValue?: Primitive;
   name?: string;
   unit?: string;
   hasThresholds: boolean;
+  thresholds?: (string | number)[][];
 }) => {
-  const gaugeThresholds = useGaugeThresholds({
-    hasThresholds,
-    settings,
-    thresholds,
-  });
   const { getFormatterValue } = useGaugeFormatterValue({
     significantDigits,
     unit,

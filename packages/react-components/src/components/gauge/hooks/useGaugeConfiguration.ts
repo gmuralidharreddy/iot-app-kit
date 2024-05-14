@@ -10,6 +10,7 @@ import { GaugeProps } from '../types';
 import { useEmptyGaugeSeries } from '../gaugeOptions/series/useEmptyGaugeSeries';
 import { useProgressBarGaugeSeries } from '../gaugeOptions/series/useProgressBarGaugeSeries';
 import { useThresholdOutsideArcSeries } from '../gaugeOptions/series/useThresholdOutsideArcSeries';
+import { getThresholds } from '../utils/getThresholds';
 
 export type GaugeConfigurationOptions = Pick<
   GaugeProps,
@@ -17,6 +18,7 @@ export type GaugeConfigurationOptions = Pick<
 > & {
   gaugeValue?: Primitive;
   name?: string;
+  color?: string;
   unit?: string;
   error?: string;
   isLoading?: boolean;
@@ -26,16 +28,24 @@ export const useGaugeConfiguration = (
   chartRef: ChartRef,
   {
     isLoading,
-    thresholds,
+    thresholds = [],
     gaugeValue,
     name,
+    color,
     settings,
     unit,
     significantDigits,
     error,
   }: GaugeConfigurationOptions
 ) => {
-  const hasThresholds = Boolean(thresholds?.length ?? 0 > 0);
+  const formattedThresholds =
+    thresholds?.length > 0
+      ? getThresholds({
+          settings,
+          thresholds,
+        })
+      : [];
+  const hasThresholds = Boolean(formattedThresholds?.length ?? 0 > 0);
 
   const defaultSettings = useMemo(() => {
     if (error || isLoading) return DEFAULT_GAUGE_SETTINGS;
@@ -60,10 +70,11 @@ export const useGaugeConfiguration = (
   const progressSeries = useProgressBarGaugeSeries({
     hasThresholds,
     name,
+    color,
     gaugeValue,
     unit,
     significantDigits,
-    thresholds,
+    thresholds: formattedThresholds,
     settings,
   });
 
@@ -73,7 +84,7 @@ export const useGaugeConfiguration = (
     gaugeValue,
     unit,
     significantDigits,
-    thresholds,
+    thresholds: formattedThresholds,
     settings,
   });
 

@@ -136,7 +136,7 @@ export const DEFAULT_GAUGE_PROGRESS_SETTINGS_WITH_THRESHOLDS = {
          * make axis label distance to oustside arc, color, rotate and font size
          */
         distance: -20,
-        color: 'auto',
+        color: 'inherit',
         fontSize: 10,
         rotate: 'tangential', // Given tangential because if min and max are having four or more digit number and if the rotate is not tangential then the label is overlapping with the arc
       },
@@ -187,4 +187,7 @@ export const DEFAULT_GAUGE_STYLES = {
   unitFontSize: 16,
   yMin: 0,
   yMax: 100,
+  showAggregationAndResolution: true,
+  showDataQuality: true,
+  showTimestamp: true,
 };

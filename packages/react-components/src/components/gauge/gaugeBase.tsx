@@ -16,6 +16,7 @@ import './gauge.css';
  * @param {Object} settings - The settings object.
  * @param {string} unit - The unit string.
  * @param {string} name - The name string.
+ * @param {string} color - The color string.
  * @param {boolean} isLoading - The isLoading boolean.
  * @param {number} significantDigits - The significantDigits number.
  * @param {Object} options - The options object.
@@ -31,6 +32,7 @@ export const GaugeBase: React.FC<GaugeBaseProperties> = ({
   isLoading,
   significantDigits,
   error,
+  color,
   ...options
 }) => {
   const gaugeValue = propertyPoint?.y;
@@ -47,6 +49,7 @@ export const GaugeBase: React.FC<GaugeBaseProperties> = ({
     thresholds,
     gaugeValue,
     name,
+    color,
     settings,
     unit,
     significantDigits,

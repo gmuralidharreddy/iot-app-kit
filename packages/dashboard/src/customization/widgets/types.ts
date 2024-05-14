@@ -239,10 +239,14 @@ export type LineProperties = {
 };
 
 export type GaugeProperties = QueryProperties & {
+  title?: string;
   gaugeThickness?: number;
   showName?: boolean;
   showUnit?: boolean;
   fontSize?: number;
+  showDataQuality?: boolean;
+  showAggregationAndResolution?: boolean;
+  showTimestamp?: boolean;
   labelFontSize?: number;
   unitFontSize?: number;
   yMin?: number;

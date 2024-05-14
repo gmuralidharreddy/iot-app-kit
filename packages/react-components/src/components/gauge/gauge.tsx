@@ -46,12 +46,16 @@ export const Gauge = ({
   const isLoading = streamToUse?.isLoading || false;
   const error = streamToUse?.error;
 
+  const refId = dataStreams[0]?.refId;
+  const color = styles && refId ? styles[refId]?.color : undefined;
+
   return (
     <GaugeBase
       size={size}
       propertyPoint={propertyPoint}
       name={name}
       unit={unit}
+      color={color}
       isLoading={isLoading}
       error={error?.msg}
       settings={{ ...DEFAULT_GAUGE_STYLES, ...settings }}
